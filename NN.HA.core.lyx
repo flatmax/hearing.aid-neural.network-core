@@ -1,0 +1,814 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language australian
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 3cm
+\rightmargin 2cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+The Learning prescription, A Neural Network Hearing Aid Core
+\end_layout
+
+\begin_layout Author
+Matthew R.
+ Flax <matt.flax@flatmax.com>
+\end_layout
+
+\begin_layout Abstract
+The definition of a hearing aid core which is based on a prescription neural
+ network (such as NAL-NL2) is defined here.
+ This hearing aid core replaces a traditional compressor hearing aid core
+ which mimics the said hearing aid prescription.
+ Whilst the replacement of the compressors for a neural network may seem
+ simple, the implications are vast in terms of the 
+\begin_inset Quotes eld
+\end_inset
+
+learning prescription
+\begin_inset Quotes erd
+\end_inset
+
+ where the topology of the neural network may be increased to make available
+ more free parameters and allow great personalisation of the hearing aid
+ prescription.
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+The NAL-NL2 hearing aid prescription introduced a neural network for the
+ prescription of hearing aid gain for the first time 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Flax09"
+literal "false"
+
+\end_inset
+
+ based on a desensitised speech intelligibility index (SII) designed for
+ NAL-NL2 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Flax.ssi.09"
+literal "false"
+
+\end_inset
+
+.
+ Concise descriptions of the NAL-NL2 hearing aid prescription are given
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "keidser2010derivation,keidser2011nal"
+literal "false"
+
+\end_inset
+
+ which focus on the effects of the desensitised SII on gain optimisation,
+ however the said articles gloss over the importance of the introduction
+ of the neural network to hearing aid prescription, which overcame significant
+ hurdles of reliable prescriptions being dispensed by NAL-NL1.
+ The reason why arbitrary prescription is now far more accurate was the
+ ability for the NAL-NL2 neural network to successfully interpolate between
+ optimised prescriptions for people with unique and unseen hearing loss
+ profiles.
+ Prior to the introduction of the neural network in hearing aid prescription,
+ hand crafted nonlinear equations were used to try to match the infinite
+ possible prescriptions which can't all be optimised and thus certain patients
+ would not receive optimal hearing aid prescriptions.
+\end_layout
+
+\begin_layout Standard
+This article takes the next logical step in hearing aid development by defining
+ for the first time the replacement of hearing aid compressors by a personal
+ prescription neural network.
+ This article lays the foundation for the future layering of neural network
+ and other statistically optimised systems to greatly improve hearing aid
+ performance.
+ With the introduction of personal prescription neural networks this article
+ also introduces a robust method for further personalisation away from speech
+ intelligibility prescriptions and towards learning prescriptions.
+\end_layout
+
+\begin_layout Standard
+A digital hearing aid core is shown in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:A-digital-hearing"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ where a filter bank bands the signal and pre-fit compressors implement
+ the hearing aid prescription.
+ The signal path is nonlinear as the sound pressure level is constantly
+ changing and the level estimation in the compressors are constantly changing.
+ This constantly changing level estimation generates nonlinear gain application
+ as the compressor's operating point is slowly but constantly varying.
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename figs/Compressor.Core.svg
+	width 65line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+A digital hearing aid core.
+ A filter bank bands a signal which is compressed, summed and output.
+ The compressors are fitted as best as possible to the gain prescription.
+ The signal chain is nonlinear.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:A-digital-hearing"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename figs/NN.Core.svg
+	width 65line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+A neural network hearing aid core.
+ The filter bank bands the signal and a sound level meter (SLM) drives the
+ prescription neural network.
+ The gains prescribed by the NN are applied to the signal which is then
+ summed and output.
+ The signals in this core is block linear as the gains are constant for
+ each signal block.
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:A-neural-network"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Digital and neural network hearing aid cores.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The hearing aid implemented with a prescription neural network core, shown
+ in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:A-neural-network"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ operates on a block of N samples of audio signal.
+ The sound level meter (SLM) presents signal levels for the neural network
+ to prescribe the block gain for each band of the filter bank.
+ The gains are applied to the banded signals and summed then output to the
+ receiver.
+ As the gains are not varying within a signal block, the signal chain is
+ linear.
+ Half window overlap add techniques can be used to allow the audio blocks
+ to vary smoothly and allow the gains to vary without output discontinuity.
+\end_layout
+
+\begin_layout Standard
+This article prescribes the implementation of a hearing aid with a neural
+ network core.
+ Free software is also available which implements the theory in this document.
+ The first Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Log-banded-filter"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ implements a log banded filter bank centred around the prescription frequencies
+ (
+\begin_inset Formula $f_{c}$
+\end_inset
+
+).
+ The duration of the audio in each filter is roughly eight milliseconds
+ and after overlap add the effective hearing aid gains change at a rate
+ of approximately four milliseconds.
+ Rates of gain change slower then three milliseconds are optimal for a prescript
+ion algorithm such as NAL-NL2 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Flax09"
+literal "false"
+
+\end_inset
+
+ as the compression ratio of the optimised prescription is not altered and
+ thus the speech intelligibility index is maximised.
+ The overall latencies of the filters can be further reduced using suitable
+ digital signal processing low latency convolution schemes.
+\end_layout
+
+\begin_layout Standard
+Subsequent sections 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:The-sound-level"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Audio-amplification-and"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ briefly address level metering and signal amplification.
+ While the last section leaves the prescription neural network as an open
+ design solution.
+ The best neural network will start the user in a space which is optimised
+ for SII maximisation, but allow the user to train their prescription to
+ their own personal target.
+ The gradual expansion of the free parameters available to the neural network
+ will allow for the expansion in the complexity of gain prescription to
+ the user's taste.
+\end_layout
+
+\begin_layout Section
+Log banded filter bank
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Log-banded-filter"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The prescription algorithm outputs gains for the log centred frequencies
+ (
+\begin_inset Formula $f_{c}$
+\end_inset
+
+ in Hz) over the M=6 bands from m=0 to m=M-1
+\begin_inset Formula 
+\begin{align*}
+f_{c}\left(m\right)= & 250\left(2^{m}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Zero phase brick wall band limited filters are generated
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+See the script gtkiostream/mFiles/ImpBandLim.m as a reference.
+\end_layout
+
+\end_inset
+
+ where the zero phase filters (
+\begin_inset Formula $h_{0,\,m}$
+\end_inset
+
+) are specified in the Discrete Fourier Domain (
+\begin_inset Formula $H_{0,\,m}$
+\end_inset
+
+) and transformed to the time domain using the inverse Discrete Fourier
+ Transform (DFT or 
+\begin_inset Formula $\mathcal{F}$
+\end_inset
+
+)
+\begin_inset Formula 
+\begin{align*}
+H_{0,\,m}\left(f_{i}\left(m\right),\,f_{a}\left(m\right)\right) & =\left.1\right]_{f_{i}\le\left|f\right|\le f_{a}}\\
+h_{0,\,m} & =\mathcal{F}^{-1}\left\{ H_{0,\,m}\right\} 
+\end{align*}
+
+\end_inset
+
+where the minimum frequency (
+\begin_inset Formula $f_{i}\left(m\right)$
+\end_inset
+
+) and maximum frequency (
+\begin_inset Formula $f_{a}\left(m\right)$
+\end_inset
+
+) are specified per band m (see Equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:band-limits"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+These zero phase filters are circularly shifted by a constant group delay
+ of 
+\begin_inset Formula $\frac{N}{2}$
+\end_inset
+
+ samples to give the linear phase band limited filters (
+\begin_inset Formula $h_{m}$
+\end_inset
+
+)
+\begin_inset Formula 
+\begin{align*}
+h_{m}=h_{m,\,n} & =h_{m}[n]=h_{0,\,m}\left[\left(n+\frac{N}{2}\right)\,mod\,N-1\right]
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The specifiaction of the band limits (in Hz) are
+\begin_inset Formula 
+\begin{align}
+f_{a}\left(m\right)= & \begin{cases}
+f_{c}\left(m\right)+f_{t} & m=0\\
+\frac{3}{2}f_{c}\left(m\right) & m>0
+\end{cases}\label{eq:band-limits}\\
+f_{i}\left(m\right)= & \begin{cases}
+20 & m=0\\
+f_{a}\left(m-1\right) & m>0
+\end{cases}\nonumber 
+\end{align}
+
+\end_inset
+
+where 
+\begin_inset Formula $f_{t}$
+\end_inset
+
+ is the frequency stepping between Fourier bins or the DFT resolution, which
+ is kept to a maximum value
+\begin_inset Formula 
+\[
+f_{t}=\frac{f_{c}\left(0\right)}{2}
+\]
+
+\end_inset
+
+and this defines the number of samples (N) in the filter given a sample
+ rate of 
+\begin_inset Formula $f_{s}$
+\end_inset
+
+ Hz
+\begin_inset Formula 
+\[
+N=\frac{f_{s}}{f_{t}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+An example filter bank with a sample rate of 
+\begin_inset Formula $f_{s}=24\,kHz$
+\end_inset
+
+ is implemented in the script LogFilterBankTest.m and is shown in Figure
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:hearing-aid-filters"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename figs/hm.eps
+	width 65line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+The hearing aid filter bank 
+\begin_inset Formula $h_{m}$
+\end_inset
+
+.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:hearing-aid-filters"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+The sound level meter
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:The-sound-level"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The SLM estimates the dB SPL level of the signal (
+\begin_inset Formula $s$
+\end_inset
+
+) for each band (
+\begin_inset Formula $l_{m}$
+\end_inset
+
+)
+\begin_inset Formula 
+\[
+l_{m}=20\,log10\left(\sum_{n=0}^{N-1}h_{m}*s+l_{t,m}\right)+l_{d,m}
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $*$
+\end_inset
+
+ represents the convolution operator and the three scaling variables are
+ defined as; 
+\begin_inset Formula $l_{t}$
+\end_inset
+
+ is a time domain DC offset which may be necessary in some systems.
+ 
+\begin_inset Formula $l_{d}$
+\end_inset
+
+ is a gain variable which converts digital full scale levels into dB sound
+ pressure level.
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Section
+Audio amplification and output
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Audio-amplification-and"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The gained bands of audio are summed and output
+\begin_inset Formula 
+\[
+y=\sum_{m=0}^{M-1}g_{m}h_{m}*s
+\]
+
+\end_inset
+
+At this point overlap add sums the last block of audio to the current block
+ of audio to generate the receiver's output audio signal (
+\begin_inset Formula $r_{n}$
+\end_inset
+
+)
+\begin_inset Formula 
+\[
+r_{n}=y_{n-N/2}*w_{n}+y_{n}*w_{n}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+The prescription neural network
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:The-presciption-neural"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The neural network will input signal levels per band for each block of audio
+ and output the required signal gain per band (
+\begin_inset Formula $g_{m}$
+\end_inset
+
+).
+ All neural network pre and post conditioning are applied in this block
+ of processing.
+\end_layout
+
+\begin_layout Standard
+The neural network can be multi-layer and have arbitrary non-linear layer
+ output functions.
+ The implementation of the prescription neural network is beyond the scope
+ of this document.
+\end_layout
+
+\begin_layout Section
+Conclusion
+\end_layout
+
+\begin_layout Standard
+This article replaces traditional hearing aid cores which are based on compresso
+rs (see Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:A-digital-hearing"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) with the a suitable SII maximising neural network (see Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:A-neural-network"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+ A traditional prescription system such as NAL-NL2 can be placed directly
+ onto the users hearing aid in the form of a personal prescription neural
+ network.
+ This personal prescription neural network can then be trained to learn
+ the user's preference in amplification.
+ With time as the free parameters in the neural network are increased in
+ number, more complex features and learning may be accomplished.
+\end_layout
+
+\begin_layout Standard
+A suitable FIR filter for this hearing aid is defined in Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Log-banded-filter"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ which targets a low latency convolution algorithm to allow a roughly 3
+ ms system latency which matches the optimal operating latency for the NAL-NL2
+ prescription algorithm.
+ A simple sound level meter and amplification strategy is also defined in
+ Sections 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:The-sound-level"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Audio-amplification-and"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+btprint "btPrintCited"
+bibfiles "bib"
+options "plain"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
