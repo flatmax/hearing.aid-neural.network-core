@@ -361,8 +361,12 @@ literal "false"
 
  as the compression ratio of the optimised prescription is not altered and
  thus the speech intelligibility index is maximised.
- The overall latencies of the filters can be further reduced using suitable
- digital signal processing low latency convolution schemes.
+ The overall latencies of the filters are half the filter length as there
+ is an overlap add framework.
+ In operation, the first half block can be output after half the filter
+ length is input/output and every subsequent half block is processed and
+ output, resulting in an overall latency of half the filter length which
+ is around 3 ms to 4 ms.
 \end_layout
 
 \begin_layout Standard
@@ -770,9 +774,9 @@ noprefix "false"
 
 \end_inset
 
- which targets a low latency convolution algorithm to allow a roughly 3
- ms system latency which matches the optimal operating latency for the NAL-NL2
- prescription algorithm.
+ which targets a half block input/output delay to allow a roughly 3 ms system
+ latency which matches the optimal operating latency for the NAL-NL2 prescriptio
+n algorithm.
  A simple sound level meter and amplification strategy is also defined in
  Sections 
 \begin_inset CommandInset ref
