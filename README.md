@@ -2,7 +2,7 @@
 
 ## Cite this article
 ```
-@article{Flax2023,
+@article{Flax-TLP-2023,
   author  = "Matt R. Flax",
   title   = "The Learning prescription, A Neural Network Hearing Aid Core",
   journal = "Flatmax Pty Ltd",
