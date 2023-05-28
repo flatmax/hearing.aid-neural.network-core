@@ -82,7 +82,7 @@
 \begin_body
 
 \begin_layout Title
-The Learning prescription, A Neural Network Hearing Aid Core
+The Learning Prescription, A Neural Network Hearing Aid Core
 \end_layout
 
 \begin_layout Author
@@ -723,8 +723,15 @@ The neural network will input signal levels per band for each block of audio
 \begin_layout Standard
 The neural network can be multi-layer and have arbitrary non-linear layer
  output functions.
- The implementation of the prescription neural network is beyond the scope
- of this document.
+ The implementation of the prescription neural network 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Flax-NL2P-2012"
+literal "false"
+
+\end_inset
+
+ is proprietary software.
 \end_layout
 
 \begin_layout Section
